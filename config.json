@@ -1,0 +1,15 @@
+{
+    "checkerConfig": {
+        "delay": 60
+    },
+    "sqlConfig": {
+        "storagepath": "./storage/sqlLite/storage.db"
+    },
+    "serverConfig": {
+        "port" : ":8080",
+        "readTimeout": 10,
+        "writeTimeout": 10,
+        "idleTimeout": 60,
+        "readHeaderTimeout": 10
+    }
+}

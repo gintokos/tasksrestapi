@@ -27,3 +27,5 @@ go.work.sum
 # logs
 logs.txt
 
+# database
+*.db
