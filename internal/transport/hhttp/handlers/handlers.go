@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -68,15 +69,20 @@ func PostTask(st storage.Storage, logger *slog.Logger) func(w http.ResponseWrite
 			return
 		}
 
-		if err := json.NewEncoder(w).Encode(taskwithid); err != nil {
+		responseBuffer := &bytes.Buffer{}
+		if err := json.NewEncoder(responseBuffer).Encode(taskwithid); err != nil {
 			logger.Error("error on encoding taskwithid to json", sl.Err(err))
 			WriteNewResponceWithError(w, internalError, http.StatusInternalServerError, logger)
 			return
 		}
+
 		w.WriteHeader(http.StatusCreated)
+
+		if _, err := w.Write(responseBuffer.Bytes()); err != nil {
+			logger.Error("error on writing response to client", sl.Err(err))
+		}
 	}
 }
-
 func PutTask(st storage.Storage, logger *slog.Logger) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		op := "PUT.tasks.id"
@@ -116,7 +122,6 @@ func PutTask(st storage.Storage, logger *slog.Logger) func(w http.ResponseWriter
 			WriteNewResponceWithError(w, internalError, http.StatusInternalServerError, logger)
 			return
 		}
-		w.WriteHeader(http.StatusOK)
 	}
 }
 
@@ -150,6 +155,7 @@ func DeleteTask(st storage.Storage, logger *slog.Logger) func(w http.ResponseWri
 }
 
 func WriteNewResponceWithError(w http.ResponseWriter, errstring string, status int, logger *slog.Logger) {
+	logger.Info("http-server.handlers.WriteNewResponceWithError")
 	w.WriteHeader(status)
 	resp := server.ResponceWithError{
 		Msg: "error",
