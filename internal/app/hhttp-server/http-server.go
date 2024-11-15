@@ -22,7 +22,7 @@ type HttpServer struct {
 
 func NewHttpServer(logger *slog.Logger, storage storage.Storage, cfg config.ServerConfig) HttpServer {
 	srv := http.Server{
-		Addr:              cfg.Port,
+		Addr: "0.0.0.0:8080",
 		ErrorLog:          log.New(io.Discard, "", 0),
 		ReadTimeout:       time.Duration(cfg.ReadTimeout) * time.Second,
 		WriteTimeout:      time.Duration(cfg.WriteTimeout) * time.Second,
