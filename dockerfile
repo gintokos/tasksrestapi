@@ -4,10 +4,8 @@ WORKDIR /tasks
 
 COPY go.mod go.sum ./
 
-# Скачиваем все зависимости
 RUN go mod tidy
 
-# Копируем весь исходный код, включая папку cmd
 COPY . .
 
 RUN mkdir -p /tasks/bin && go build -o /tasks/bin/main ./cmd
